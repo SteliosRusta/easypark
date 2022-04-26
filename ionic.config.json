@@ -1,0 +1,7 @@
+{
+  "name": "easyPark",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
