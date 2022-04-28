@@ -12,18 +12,7 @@ import {
 } from "@ionic/react";
 
 const HomePage: React.FC = () => {
-  return (
-    <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Home</IonTitle>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent>
-        <h1>Home</h1>
-      </IonContent>
-    </IonPage>
-  );
+  return <h1>Home</h1>;
 };
 
 export default HomePage;

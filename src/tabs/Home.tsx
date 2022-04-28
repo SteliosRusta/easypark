@@ -6,9 +6,10 @@ import {
   IonIcon,
   IonLabel,
   IonRouterOutlet,
+  IonPage,
 } from "@ionic/react";
-import { car, home, list, person, settings } from "ionicons/icons";
-import { Redirect, Route } from "react-router-dom";
+import { car, home, list, person } from "ionicons/icons";
+import { Route } from "react-router-dom";
 import { IonReactRouter } from "@ionic/react-router";
 
 import HomePage from "./HomePage";
@@ -20,32 +21,32 @@ const Tabs: React.FC = () => (
   <IonReactRouter>
     <IonTabs>
       <IonTabBar slot="bottom">
-        <IonTabButton tab="home" href="/">
+        <IonTabButton tab="home" href="/home/homepage">
           <IonIcon icon={home} />
           <IonLabel>home</IonLabel>
         </IonTabButton>
 
-        <IonTabButton tab="profile" href="/profile">
+        <IonTabButton tab="profile" href="/home/profile">
           <IonIcon icon={person} />
           <IonLabel>Profile</IonLabel>
         </IonTabButton>
 
-        <IonTabButton tab="<myBookings>" href="/mybookings">
+        <IonTabButton tab="<myBookings>" href="/home/mybookings">
           <IonIcon icon={list} />
           <IonLabel>My Bookings</IonLabel>
         </IonTabButton>
 
-        <IonTabButton tab="<mySpots>" href="/myspots">
+        <IonTabButton tab="<mySpots>" href="/home/myspots">
           <IonIcon icon={car} />
           <IonLabel>My Spots</IonLabel>
         </IonTabButton>
       </IonTabBar>
 
       <IonRouterOutlet>
-        <Route path="/" component={HomePage} />
-        <Route path="/profile" component={Profile} />
-        <Route path="/mybookings" component={MyBookings} />
-        <Route path="/myspots" component={MySpots} />
+        <Route path="/home/homepage" component={HomePage} />
+        <Route path="/home/profile" component={Profile} />
+        <Route path="/home/mybookings" component={MyBookings} />
+        <Route path="/home/myspots" component={MySpots} />
       </IonRouterOutlet>
     </IonTabs>
   </IonReactRouter>

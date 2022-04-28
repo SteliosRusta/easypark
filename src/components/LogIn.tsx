@@ -11,6 +11,11 @@ import {
   IonButton,
   IonGrid,
   IonAlert,
+  IonPage,
+  IonHeader,
+  IonToolbar,
+  IonContent,
+  IonTitle,
 } from "@ionic/react";
 import { personCircle } from "ionicons/icons";
 function validateEmail(email: string) {
@@ -48,66 +53,75 @@ const LogIn: React.FC = () => {
     };
   };
   return (
-    <IonGrid>
-      <IonRow>
-        <IonCol>
-          <IonAlert
-            isOpen={isError}
-            onDidDismiss={() => setIsError(false)}
-            cssClass="my-custom-class"
-            header={"Error!"}
-            message={message}
-            buttons={["Dismiss"]}
-          />
-        </IonCol>
-      </IonRow>
-      <IonRow>
-        <IonCol>
-          <IonIcon
-            style={{ fontSize: "70px", color: "#0040ff" }}
-            icon={personCircle}
-          />
-        </IonCol>
-      </IonRow>
-      <IonRow>
-        <IonCol>
-          <IonItem>
-            <IonLabel position="floating"> Email</IonLabel>
-            <IonInput
-              type="email"
-              value={email}
-              onIonChange={(e) => setEmail(e.detail.value!)}
-            ></IonInput>
-          </IonItem>
-        </IonCol>
-      </IonRow>
+    <IonPage>
+      <IonHeader>
+        <IonToolbar>
+          <IonTitle>Login</IonTitle>
+        </IonToolbar>
+      </IonHeader>
+      <IonContent fullscreen className="ion-padding ion-text-center">
+        <IonGrid>
+          <IonRow>
+            <IonCol>
+              <IonAlert
+                isOpen={isError}
+                onDidDismiss={() => setIsError(false)}
+                cssClass="my-custom-class"
+                header={"Error!"}
+                message={message}
+                buttons={["Dismiss"]}
+              />
+            </IonCol>
+          </IonRow>
+          <IonRow>
+            <IonCol>
+              <IonIcon
+                style={{ fontSize: "70px", color: "#0040ff" }}
+                icon={personCircle}
+              />
+            </IonCol>
+          </IonRow>
+          <IonRow>
+            <IonCol>
+              <IonItem>
+                <IonLabel position="floating"> Email</IonLabel>
+                <IonInput
+                  type="email"
+                  value={email}
+                  onIonChange={(e) => setEmail(e.detail.value!)}
+                ></IonInput>
+              </IonItem>
+            </IonCol>
+          </IonRow>
 
-      <IonRow>
-        <IonCol>
-          <IonItem>
-            <IonLabel position="floating"> Password</IonLabel>
-            <IonInput
-              type="password"
-              value={password}
-              onIonChange={(e) => setPassword(e.detail.value!)}
-            ></IonInput>
-          </IonItem>
-        </IonCol>
-      </IonRow>
-      <IonRow>
-        <IonCol>
-          <p style={{ fontSize: "small" }}>
-            By clicking LOGIN you agree to our <a href="#">Policy</a>
-          </p>
-          <IonButton expand="block" onClick={handleLogin}>
-            Login
-          </IonButton>
-          <p style={{ fontSize: "medium" }}>
-            Don't have an account? <a href="#">Sign up!</a>
-          </p>
-        </IonCol>
-      </IonRow>
-    </IonGrid>
+          <IonRow>
+            <IonCol>
+              <IonItem>
+                <IonLabel position="floating"> Password</IonLabel>
+                <IonInput
+                  type="password"
+                  value={password}
+                  onIonChange={(e) => setPassword(e.detail.value!)}
+                ></IonInput>
+              </IonItem>
+            </IonCol>
+          </IonRow>
+          <IonRow>
+            <IonCol>
+              <p style={{ fontSize: "small" }}>
+                By clicking LOGIN you agree to our <a href="#">Policy</a>
+              </p>
+              <IonButton expand="block" onClick={handleLogin}>
+                Login
+              </IonButton>
+              <p style={{ fontSize: "medium" }}>
+                Don't have an account? <a href="#">Sign up!</a>
+              </p>
+            </IonCol>
+          </IonRow>
+        </IonGrid>
+      </IonContent>
+    </IonPage>
   );
 };
 
