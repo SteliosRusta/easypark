@@ -12,7 +12,20 @@ import {
 } from "@ionic/react";
 
 const MyBookings: React.FC = () => {
-  return <h1>My Bookings</h1>;
+  return (
+    <IonPage>
+      <IonHeader>
+        <IonToolbar>
+          <IonTitle>
+            <h1>My Bookings</h1>
+          </IonTitle>
+        </IonToolbar>
+      </IonHeader>
+      <IonContent>
+        <h1>My Bookings</h1>
+      </IonContent>
+    </IonPage>
+  );
 };
 
 export default MyBookings;

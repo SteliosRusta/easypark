@@ -12,7 +12,20 @@ import {
 } from "@ionic/react";
 
 const Profile: React.FC = () => {
-  return <h1>Profile</h1>;
+  return (
+    <IonPage>
+      <IonHeader>
+        <IonToolbar>
+          <IonTitle>
+            <h1>Profile</h1>
+          </IonTitle>
+        </IonToolbar>
+      </IonHeader>
+      <IonContent>
+        <h1>Profile</h1>
+      </IonContent>
+    </IonPage>
+  );
 };
 
 export default Profile;

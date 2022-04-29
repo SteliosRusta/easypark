@@ -12,7 +12,20 @@ import {
 } from "@ionic/react";
 
 const MySpots: React.FC = () => {
-  return <h1>My Spots</h1>;
+  return (
+    <IonPage>
+      <IonHeader>
+        <IonToolbar>
+          <IonTitle>
+            <h1>My Spots</h1>
+          </IonTitle>
+        </IonToolbar>
+      </IonHeader>
+      <IonContent>
+        <h1>My spots</h1>
+      </IonContent>
+    </IonPage>
+  );
 };
 
 export default MySpots;
