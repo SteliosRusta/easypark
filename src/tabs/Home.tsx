@@ -6,11 +6,11 @@ import {
   IonIcon,
   IonLabel,
   IonRouterOutlet,
-  IonPage,
 } from "@ionic/react";
 import { car, home, list, person } from "ionicons/icons";
 import { Route } from "react-router-dom";
 import { IonReactRouter } from "@ionic/react-router";
+import "./HomePage.css";
 
 import HomePage from "./HomePage";
 import Profile from "./Profile";

@@ -2,12 +2,25 @@
   height: 100vh;
   width: 100vw;
 }
-button {
+#searchbar {
+  top: 50px;
+  left: 75px;
+  z-index: 2000;
+  width: 80vw;
+  height: 6vh;
+  color: gray;
+}
+#searchcontainer {
+  top: 50px;
+  left: 75px;
+  z-index: 2000;
+  width: 80vw;
+  color: gray;
+}
+#suggestions {
   position: absolute;
   top: 50px;
-  left: 150px;
   z-index: 2000;
-  width: 100px;
-  height: 50px;
+  width: 80vw;
   color: gray;
 }

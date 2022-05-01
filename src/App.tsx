@@ -1,17 +1,8 @@
 import { useState } from "react";
 import { Route, Redirect } from "react-router-dom";
-import {
-  IonApp,
-  IonRouterOutlet,
-  setupIonicReact,
-  IonPage,
-} from "@ionic/react";
+import { IonApp, IonRouterOutlet, setupIonicReact } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
-import LandingPage from "./pages/LandingPage";
-import HomePage from "./tabs/HomePage";
-import Profile from "./tabs/Profile";
-import MyBookings from "./tabs/MyBookings";
-import MySpots from "./tabs/MySpots";
+
 import Home from "./tabs/Home";
 
 /* Core CSS required for Ionic components to work properly */

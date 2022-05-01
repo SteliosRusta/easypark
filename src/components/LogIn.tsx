@@ -1,5 +1,4 @@
 import "./LogIn.css";
-import { useHistory } from "react-router";
 import { useState } from "react";
 import {
   IonRow,
@@ -24,7 +23,6 @@ function validateEmail(email: string) {
   return re.test(String(email).toLowerCase());
 }
 const LogIn: React.FC = () => {
-  const history = useHistory();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [isError, setIsError] = useState<boolean>(false);

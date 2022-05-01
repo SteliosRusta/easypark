@@ -69,7 +69,8 @@
   },
   "devDependencies": {
     "@capacitor/cli": "3.5.0",
-    "@types/jest": "^27.4.1"
+    "@types/jest": "^27.4.1",
+    "@types/leaflet": "^1.7.9"
   },
   "description": "An Ionic project"
 }

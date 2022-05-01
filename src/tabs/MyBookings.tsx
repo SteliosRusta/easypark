@@ -5,10 +5,6 @@ import {
   IonToolbar,
   IonTitle,
   IonContent,
-  IonList,
-  IonItem,
-  IonLabel,
-  IonButton,
 } from "@ionic/react";
 
 const MyBookings: React.FC = () => {
