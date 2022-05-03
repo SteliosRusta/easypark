@@ -15,7 +15,7 @@ import {
   IonToolbar,
   IonContent,
   IonTitle,
-  IonTabButton,
+  IonLoading,
 } from "@ionic/react";
 import { personCircle } from "ionicons/icons";
 function validateEmail(email: string) {
@@ -23,11 +23,12 @@ function validateEmail(email: string) {
     /^((?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\]))$/;
   return re.test(String(email).toLowerCase());
 }
-const LogIn: React.FC = () => {
+const Register: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [isError, setIsError] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
+  const [name, setName] = useState<string>("");
   const handleLogin = () => {
     if (!email) {
       setMessage("Please enter a valid email");
@@ -49,6 +50,7 @@ const LogIn: React.FC = () => {
     const loginData = {
       email: email,
       password: password,
+      name: name,
     };
   };
 
@@ -84,6 +86,18 @@ const LogIn: React.FC = () => {
           <IonRow>
             <IonCol>
               <IonItem>
+                <IonLabel position="floating"> Name</IonLabel>
+                <IonInput
+                  type="email"
+                  value={name}
+                  onIonChange={(e) => setName(e.detail.value!)}
+                ></IonInput>
+              </IonItem>
+            </IonCol>
+          </IonRow>
+          <IonRow>
+            <IonCol>
+              <IonItem>
                 <IonLabel position="floating"> Email</IonLabel>
                 <IonInput
                   type="email"
@@ -109,15 +123,15 @@ const LogIn: React.FC = () => {
           <IonRow>
             <IonCol>
               <p style={{ fontSize: "small" }}>
-                By clicking LOGIN you agree to our <a href="#">Policy</a>
+                By clicking SIGN UP you agree to our <a href="#">Policy</a>
               </p>
               <IonButton expand="block" onClick={handleLogin}>
-                Login
+                SIGN UP
               </IonButton>
               <p style={{ fontSize: "medium" }}>
-                Don't have an account? <br />
-                <IonButton fill="outline" size="small" href="/register">
-                  <IonLabel>SIGN UP</IonLabel>
+                Already have an account? <br />
+                <IonButton fill="outline" size="small" href="/login">
+                  <IonLabel>Log in</IonLabel>
                 </IonButton>
               </p>
             </IonCol>
@@ -128,4 +142,4 @@ const LogIn: React.FC = () => {
   );
 };
 
-export default LogIn;
+export default Register;

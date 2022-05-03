@@ -5,6 +5,7 @@ import {
   IonToolbar,
   IonTitle,
   IonContent,
+  IonLoading,
 } from "@ionic/react";
 
 const MyBookings: React.FC = () => {
@@ -12,12 +13,10 @@ const MyBookings: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>
-            <h1>My Bookings</h1>
-          </IonTitle>
+          <IonTitle>My Bookings</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent>
+      <IonContent fullscreen>
         <h1>My Bookings</h1>
       </IonContent>
     </IonPage>
