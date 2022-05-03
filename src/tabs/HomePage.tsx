@@ -5,6 +5,7 @@ import {
   IonToolbar,
   IonTitle,
   IonContent,
+  IonLoading,
 } from "@ionic/react";
 import "./HomePage.css";
 import LeafletMap from "../components/LeafletMap";
@@ -21,6 +22,12 @@ const HomePage: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent>
+        <IonLoading
+          isOpen={true}
+          onDidDismiss={() => console.log("dialog is closed")}
+          message={"Please wait..."}
+          duration={3000}
+        />
         <LayerContextProvider>
           <LeafletMap />
         </LayerContextProvider>

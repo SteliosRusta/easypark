@@ -3,14 +3,15 @@ import App from "./App";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 import reportWebVitals from "./reportWebVitals";
 
-import { createRoot } from "react-dom/client";
+import { render } from "react-dom";
 const container = document.getElementById("app");
-const root = createRoot(container!); // createRoot(container!) if you use TypeScript
+//const root = createRoot(container!); // createRoot(container!) if you use TypeScript
 
-root.render(
+render(
   <React.StrictMode>
     <App />
-  </React.StrictMode>
+  </React.StrictMode>,
+  container
 );
 
 // If you want your app to work offline and load faster, you can change
