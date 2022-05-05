@@ -25,23 +25,24 @@ import "@ionic/react/css/display.css";
 import "./theme/variables.css";
 import LogIn from "./components/LogIn";
 import Register from "./components/Register";
+import AuthContextProvider from "./components/context/AuthContex";
 
 setupIonicReact();
 
 const App: React.FC = () => {
-  const [isAuthed, setIsAuthed] = useState<boolean>(true);
-
   return (
-    <IonApp>
-      <IonReactRouter>
-        <IonRouterOutlet>
-          <Route path="/login" component={LogIn} />
-          <Route path="/register" component={Register} />
-          <Redirect from="/" to="login" exact />
-          <Route path="/home" component={Home} />
-        </IonRouterOutlet>
-      </IonReactRouter>
-    </IonApp>
+    <AuthContextProvider>
+      <IonApp>
+        <IonReactRouter>
+          <IonRouterOutlet>
+            <Route path="/login" component={LogIn} />
+            <Route path="/register" component={Register} />
+            <Redirect from="/" to="login" exact />
+            <Route path="/home" component={Home} />
+          </IonRouterOutlet>
+        </IonReactRouter>
+      </IonApp>
+    </AuthContextProvider>
   );
 };
 

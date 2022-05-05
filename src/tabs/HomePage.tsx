@@ -22,12 +22,6 @@ const HomePage: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent>
-        <IonLoading
-          isOpen={true}
-          onDidDismiss={() => console.log("dialog is closed")}
-          message={"Please wait..."}
-          duration={3000}
-        />
         <LayerContextProvider>
           <LeafletMap />
         </LayerContextProvider>

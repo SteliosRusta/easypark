@@ -4,7 +4,10 @@ import L, { LatLngTuple } from "leaflet";
 import { LayerContext } from "./context/LayerContext";
 
 import { SearchBar } from "./SearchBar";
-import { IonLoading, IonToast } from "@ionic/react";
+import { IonLoading, IonFab, IonFabButton, IonIcon } from "@ionic/react";
+import { carOutline } from "ionicons/icons";
+import { useAuth } from "./context/AuthContex";
+import axios from "axios";
 
 const icon = L.icon({
   iconUrl: "./location-sharp.svg",
@@ -25,7 +28,29 @@ const ResetCenterView = (props: any) => {
 
   return null;
 };
-
+interface Spot {
+  position: {
+    address: string;
+    location: {
+      coordinates: L.LatLngExpression;
+      type?: string;
+    };
+  };
+  _id: string;
+  __v?: number;
+  owner: {
+    email: string;
+    name: string;
+    id: string;
+    __v?: number;
+  };
+  price: number;
+  time: {
+    avDay: string[];
+    avEnd: string;
+    avStart: string;
+  };
+}
 interface LocationError {
   showError: boolean;
   message?: string;
@@ -45,8 +70,7 @@ const LeafletMap: React.FC = () => {
   const [userLocation, setUserLocation] = useState<L.LatLngExpression>([
     52, 13,
   ]);
-
-  const [loading, setLoading] = useState<boolean>(false);
+  const [nearbySpots, setNearbySpots] = useState<Spot[]>();
 
   useEffect(() => {
     setLoading(true);
@@ -77,6 +101,11 @@ const LeafletMap: React.FC = () => {
       });
     }
   }, []);
+  const authContext = useAuth();
+
+  if (!authContext) return null;
+
+  const { loading, setLoading, isAuthenticated, user, token } = authContext;
 
   if (loading)
     return (
@@ -107,6 +136,38 @@ const LeafletMap: React.FC = () => {
             </Popup>
           </Marker>
         )}
+        {nearbySpots &&
+          nearbySpots.map((spot: Spot) => {
+            return (
+              <Marker
+                key={spot._id}
+                position={spot.position.location.coordinates}
+                icon={icon}
+              >
+                <Popup>
+                  A pretty CSS3 popup. <br /> Easily customizable.
+                </Popup>
+              </Marker>
+            );
+          })}
+        <IonFab vertical="bottom" horizontal="end" slot="fixed">
+          <IonFabButton
+            onClick={async () => {
+              const { data } = await axios.get(
+                `${process.env.REACT_APP_EASYPARK_API_URL}/spots/?lng=13.5424887&lat=52.4511287&radius=1000`,
+                {
+                  headers: {
+                    Authorization: token,
+                  },
+                }
+              );
+              setNearbySpots(data);
+              console.log(nearbySpots);
+            }}
+          >
+            <IonIcon icon={carOutline} />
+          </IonFabButton>
+        </IonFab>
 
         <ResetCenterView
           selectedLocation={

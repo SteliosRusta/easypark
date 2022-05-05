@@ -1,5 +1,6 @@
 import "./LogIn.css";
-import { useState } from "react";
+import { MouseEventHandler, useState } from "react";
+import { useHistory } from "react-router-dom";
 import {
   IonRow,
   IonCol,
@@ -16,20 +17,47 @@ import {
   IonContent,
   IonTitle,
   IonLoading,
+  InputCustomEvent,
 } from "@ionic/react";
 import { personCircle } from "ionicons/icons";
+import { useAuth } from "./context/AuthContex";
 function validateEmail(email: string) {
   const re =
     /^((?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\]))$/;
   return re.test(String(email).toLowerCase());
 }
+
+interface UserData {
+  name: string;
+  email: string;
+  password: string;
+}
+
 const Register: React.FC = () => {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [{ name, email, password }, setFormState] = useState<UserData>({
+    name: "",
+    email: "",
+    password: "",
+  });
   const [isError, setIsError] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
-  const [name, setName] = useState<string>("");
-  const handleLogin = () => {
+  const authContext = useAuth();
+  const history = useHistory();
+
+  if (!authContext) return null;
+
+  const { registerUser } = authContext;
+
+  const onInputChange = (event: Event) => {
+    const inputEvent = event as InputCustomEvent;
+
+    setFormState((prev) => ({
+      ...prev,
+      [inputEvent.target.id]: inputEvent.detail.value,
+    }));
+  };
+
+  const handleRegister = async () => {
     if (!email) {
       setMessage("Please enter a valid email");
       setIsError(true);
@@ -47,11 +75,14 @@ const Register: React.FC = () => {
       return;
     }
 
-    const loginData = {
+    const userData: UserData = {
       email: email,
       password: password,
       name: name,
     };
+
+    await registerUser(userData);
+    history.replace("/home", { replace: true });
   };
 
   return (
@@ -87,11 +118,7 @@ const Register: React.FC = () => {
             <IonCol>
               <IonItem>
                 <IonLabel position="floating"> Name</IonLabel>
-                <IonInput
-                  type="email"
-                  value={name}
-                  onIonChange={(e) => setName(e.detail.value!)}
-                ></IonInput>
+                <IonInput id="name" onIonChange={onInputChange}></IonInput>
               </IonItem>
             </IonCol>
           </IonRow>
@@ -101,8 +128,8 @@ const Register: React.FC = () => {
                 <IonLabel position="floating"> Email</IonLabel>
                 <IonInput
                   type="email"
-                  value={email}
-                  onIonChange={(e) => setEmail(e.detail.value!)}
+                  id="email"
+                  onIonChange={onInputChange}
                 ></IonInput>
               </IonItem>
             </IonCol>
@@ -114,8 +141,8 @@ const Register: React.FC = () => {
                 <IonLabel position="floating"> Password</IonLabel>
                 <IonInput
                   type="password"
-                  value={password}
-                  onIonChange={(e) => setPassword(e.detail.value!)}
+                  id="password"
+                  onIonChange={onInputChange}
                 ></IonInput>
               </IonItem>
             </IonCol>
@@ -125,7 +152,7 @@ const Register: React.FC = () => {
               <p style={{ fontSize: "small" }}>
                 By clicking SIGN UP you agree to our <a href="#">Policy</a>
               </p>
-              <IonButton expand="block" onClick={handleLogin}>
+              <IonButton expand="block" onClick={handleRegister}>
                 SIGN UP
               </IonButton>
               <p style={{ fontSize: "medium" }}>

@@ -21,6 +21,7 @@
     "@types/react-leaflet": "^2.8.2",
     "@types/react-router": "^5.1.11",
     "@types/react-router-dom": "^5.1.7",
+    "axios": "^0.27.2",
     "cordova-plugin-geolocation": "^4.1.0",
     "ionicons": "^5.4.0",
     "leaflet": "^1.8.0",
