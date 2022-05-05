@@ -2,9 +2,19 @@ import React, { useContext, useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L, { LatLngTuple } from "leaflet";
 import { LayerContext } from "./context/LayerContext";
+import { isSaturday, isSunday } from "date-fns";
 
 import { SearchBar } from "./SearchBar";
-import { IonLoading, IonFab, IonFabButton, IonIcon } from "@ionic/react";
+import {
+  IonLoading,
+  IonFab,
+  IonFabButton,
+  IonIcon,
+  IonModal,
+  IonButton,
+  IonContent,
+  IonDatetime,
+} from "@ionic/react";
 import { carOutline } from "ionicons/icons";
 import { useAuth } from "./context/AuthContex";
 import axios from "axios";
@@ -71,6 +81,7 @@ const LeafletMap: React.FC = () => {
     52, 13,
   ]);
   const [nearbySpots, setNearbySpots] = useState<Spot[]>();
+  const [latitude, setLatitude] = useState<number>();
 
   useEffect(() => {
     setLoading(true);
@@ -136,25 +147,61 @@ const LeafletMap: React.FC = () => {
             </Popup>
           </Marker>
         )}
-        {nearbySpots &&
-          nearbySpots.map((spot: Spot) => {
-            return (
-              <Marker
-                key={spot._id}
-                position={spot.position.location.coordinates}
-                icon={icon}
-              >
-                <Popup>
-                  A pretty CSS3 popup. <br /> Easily customizable.
-                </Popup>
-              </Marker>
-            );
-          })}
+        {nearbySpots
+          ? nearbySpots.map((spot: Spot) => {
+              return (
+                <Marker
+                  key={spot._id}
+                  position={spot.position.location.coordinates}
+                  icon={icon}
+                >
+                  <Popup>
+                    <h3 color="blue">{spot.price}€/Hour</h3>
+                    <p>{spot.position.address}</p>
+                    {/* <IonModal
+                      isOpen={true}
+                      breakpoints={[0.1, 0.5, 1]}
+                      initialBreakpoint={0.5}
+                    >
+                      <IonContent>Modal Content</IonContent>
+                    </IonModal> */}
+                    <IonButton id="trigger-button">Book Now</IonButton>
+                    <IonModal
+                      trigger="trigger-button"
+                      breakpoints={[0.1, 0.5, 1]}
+                      initialBreakpoint={0.5}
+                    >
+                      <IonContent>
+                        <IonDatetime
+                          size="cover"
+                          firstDayOfWeek={1}
+                          minuteValues="0,30"
+                          isDateEnabled={(dateIsoString: string) => {
+                            if (
+                              isSaturday(new Date(dateIsoString)) ||
+                              isSunday(new Date(dateIsoString))
+                            ) {
+                              // Disables Saturday and Sunday
+                              return false;
+                            }
+                            return true;
+                          }}
+                        ></IonDatetime>
+                        <IonButton>Proceed</IonButton>
+                      </IonContent>
+                    </IonModal>
+                  </Popup>
+                </Marker>
+              );
+            })
+          : null}
         <IonFab vertical="bottom" horizontal="end" slot="fixed">
           <IonFabButton
             onClick={async () => {
               const { data } = await axios.get(
-                `${process.env.REACT_APP_EASYPARK_API_URL}/spots/?lng=13.5424887&lat=52.4511287&radius=1000`,
+                `${process.env.REACT_APP_EASYPARK_API_URL}/spots/?lng=${
+                  selectedLocation[1] || "13.5424887"
+                }&lat=${selectedLocation[0] || "52.4511287"}&radius=5`,
                 {
                   headers: {
                     Authorization: token,
