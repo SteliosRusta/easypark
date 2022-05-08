@@ -184,52 +184,31 @@ const LeafletMap: React.FC = () => {
                         ></IonDatetime>
                         <br></br>
                         <IonButton
-                          size="default"
-                          fill="outline"
-                          color="Light"
+                          expand="block"
                           onClick={() =>
-                            present(
-                              [
-                                {
-                                  name: "hour",
-                                  options: [
-                                    { text: "1", value: "1" },
-                                    { text: "2", value: "2" },
-                                    { text: "3", value: "3" },
-                                    { text: "4", value: "4" },
-                                    { text: "5", value: "5" },
-                                    { text: "6", value: "6" },
-                                    { text: "7", value: "7" },
-                                    { text: "8", value: "8" },
-                                    { text: "9", value: "9" },
-                                    { text: "10", value: "10" },
-                                    { text: "11", value: "11" },
-                                    { text: "12", value: "12" },
-                                  ],
-                                },
-                                {
-                                  name: "time",
-                                  options: [
-                                    { text: "AM", value: "AM" },
-                                    { text: "PM", value: "PM" },
-                                  ],
-                                },
-                              ],
-                              [
+                            present({
+                              buttons: [
                                 {
                                   text: "Confirm",
                                   handler: (selected) => {
-                                    console.log(selected);
-                                    setFrom(
-                                      `${selected.hour.value} ${selected.time.value}`
-                                    );
+                                    setFrom(selected.animal.value);
                                   },
                                 },
-                              ]
-                            )
+                              ],
+                              columns: [
+                                {
+                                  name: "animal",
+                                  options: [
+                                    { text: "Dog", value: "dog" },
+                                    { text: "Cat", value: "cat" },
+                                    { text: "Bird", value: "bird" },
+                                  ],
+                                },
+                              ],
+                            })
                           }
                         >
-                          From :
+                          Show Picker
                         </IonButton>
                         {from && <div>Available from: {from}</div>}
                         <IonItemDivider>For how many hours?</IonItemDivider>

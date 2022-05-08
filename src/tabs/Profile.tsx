@@ -19,24 +19,23 @@ import { useAuth } from "../components/context/AuthContex";
 import { useHistory } from "react-router-dom";
 
 interface UserData {
-  name: string;
-  email: string;
-  password: string;
-  taxId?: string;
+  name: string | undefined;
+  email: string | undefined;
+  password: string | undefined;
 }
 
 export const Profile: React.FC = () => {
-  const [{ name, email, password }, setFormState] = useState<UserData>({
-    name: "Nemanja Popovic",
-    email: "n.popovic94@gmail.com",
-    password: "123123",
-  });
   const history = useHistory();
   const authContext = useAuth();
-
+  const [{ name, email, password }, setFormState] = useState<UserData>({
+    name: "",
+    email: "",
+    password: "",
+  });
   if (!authContext) return null;
+  const { logOut, user } = authContext;
 
-  const { logOut } = authContext;
+  console.log(user);
 
   const onInputChange = (event: Event) => {
     const inputEvent = event as InputCustomEvent;
@@ -67,7 +66,7 @@ export const Profile: React.FC = () => {
           <IonCardSubtitle color="primary">Name:</IonCardSubtitle>
           <IonItem>
             <IonLabel position="floating" className="ion-text-center">
-              {name}
+              {user?.name}
             </IonLabel>
             <IonInput
               className="ion-text-center"
@@ -78,7 +77,7 @@ export const Profile: React.FC = () => {
           <IonCardSubtitle color="primary">Password:</IonCardSubtitle>
           <IonItem>
             <IonLabel position="floating" className="ion-text-center">
-              {password}
+              {user?.password}
             </IonLabel>
             <IonInput
               type="password"
@@ -90,7 +89,7 @@ export const Profile: React.FC = () => {
           <IonCardSubtitle color="primary">eMail:</IonCardSubtitle>
           <IonItem>
             <IonLabel position="floating" className="ion-text-center">
-              {email}
+              {user?.email}
             </IonLabel>
             <IonInput
               className="ion-text-center"

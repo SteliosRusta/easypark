@@ -21,7 +21,7 @@ interface UserData {
 interface AuthContextValue {
   loading: boolean;
   isAuthenticated: boolean;
-  user: object | null;
+  user: UserData | null;
   userLogin: (formData: UserData) => Promise<void>;
   registerUser: (formData: UserData) => Promise<void>;
   logOut: () => void;
@@ -35,7 +35,7 @@ export const useAuth = () => useContext(AuthContext);
 
 const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [user, setUser] = useState<object | null>(null);
+  const [user, setUser] = useState<UserData | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [token, setToken] = useState<string | boolean>(() => {
     const token = localStorage.getItem("token");
@@ -85,7 +85,6 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
       localStorage.setItem("token", token);
       setIsAuthenticated(true);
       setLoading(false);
-      history.replace("/home", { replace: true });
     } catch (error) {
       setLoading(false);
       return alert("InvalidUser");
@@ -119,7 +118,6 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     setToken(false);
     setUser(null);
     setIsAuthenticated(false);
-    history.replace("/login", { replace: true });
   };
 
   const value: AuthContextValue = {

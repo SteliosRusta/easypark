@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   PaymentElement,
   useStripe,
-  useElements
+  useElements,
 } from "@stripe/react-stripe-js";
 import { IonContent } from "@ionic/react";
 export default function CheckoutForm() {
@@ -58,7 +58,7 @@ export default function CheckoutForm() {
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
-        return_url: "http://localhost:3000/home/homepage",
+        return_url: "http://localhost:8100/home/myspots?",
       },
     });
 
@@ -77,7 +77,6 @@ export default function CheckoutForm() {
   };
 
   return (
-      
     <form id="payment-form" onSubmit={handleSubmit}>
       <PaymentElement id="payment-element" />
       <button disabled={isLoading || !stripe || !elements} id="submit">
@@ -88,6 +87,5 @@ export default function CheckoutForm() {
       {/* Show any error or success messages */}
       {message && <div id="payment-message">{message}</div>}
     </form>
-  
   );
 }

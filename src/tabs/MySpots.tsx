@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   IonContent,
   IonHeader,
@@ -23,12 +23,35 @@ import { useAuth } from "../components/context/AuthContex";
 import axios from "axios";
 import { LatLng, LatLngTuple } from "leaflet";
 
+interface Spot {
+  position: {
+    address: string;
+    location: {
+      coordinates: L.LatLngExpression;
+      type?: string;
+    };
+  };
+  _id: string;
+  __v?: number;
+  owner: {
+    email: string;
+    name: string;
+    id: string;
+    __v?: number;
+  };
+  price: number;
+  time: {
+    avDay: string[];
+    avEnd: string;
+    avStart: string;
+  };
+}
 const MySpots: React.FC = () => {
   const [text, setText] = useState<string>();
-  const [to, setTo] = useState("");
-  const [from, setFrom] = useState("");
+  const [to, setTo] = useState<string>("");
+  const [from, setFrom] = useState<string>("");
   const [present] = useIonPicker();
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState<string>("");
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
   const [address, setAddress] = useState<string>("");
   const [city, setCity] = useState<string>("");
@@ -36,15 +59,35 @@ const MySpots: React.FC = () => {
   const [zipCode, setZipCode] = useState<string>("");
   const [spotPoint, setSpotPoint] = useState<string>("");
   const [spotCoor, setSpotCoor] = useState<LatLngTuple>([0, 0]);
+  const [mySpots, setMySpots] = useState<Spot[]>();
 
+  useEffect(() => {
+    try {
+      (async () => {
+        setLoading(true);
+        const { data } = await axios.get(
+          `${process.env.REACT_APP_EASYPARK_API_URL}/spots/myspots`,
+          {
+            headers: {
+              Authorization: token,
+            },
+          }
+        );
+        console.log(data);
+        setMySpots(data);
+        setLoading(false);
+      })();
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
   const authContext = useAuth();
 
   if (!authContext) return null;
 
   const { setLoading, token, user } = authContext;
-
+  console.log(spotCoor);
   const saveSpot = async () => {
-    const formData = {};
     try {
       setLoading(true);
       setSpotPoint(`${address} ${city} ${zipCode} ${state}`);
@@ -58,37 +101,36 @@ const MySpots: React.FC = () => {
         .then((res) => res.text())
         .then((result) => {
           console.log(JSON.parse(result));
-          const response = JSON.parse(result).then((res: any) =>
-            setSpotCoor([res.lat, res.lon])
-          );
-          setLoading(false);
+          let myVar = JSON.parse(result);
+          setSpotCoor([Number(myVar[0].lat), Number(myVar[0].lon)]);
         })
         .catch((err) => console.log(err));
 
-      console.log(spotCoor);
-
       const formData = {
         position: {
-          address: address,
-          location: spotCoor,
-          time: {
-            avDay: selectedDays,
-            avStart: from,
-            avEnd: to,
+          address: spotPoint,
+          location: {
+            type: "Point",
+            coordinates: spotCoor,
           },
         },
+        price: Number(text),
+
+        time: {
+          avDay: selectedDays,
+          avStart: from,
+          avEnd: to,
+        },
       };
-      console.log(formData);
       const { data } = await axios.post(
         `${process.env.REACT_APP_EASYPARK_API_URL}/spots`,
-        { formData },
+        formData,
         {
           headers: {
             Authorization: token,
           },
         }
       );
-      console.log(data);
 
       setLoading(false);
     } catch (error) {
@@ -144,7 +186,10 @@ const MySpots: React.FC = () => {
               <IonItemDivider>Cost</IonItemDivider>
               <IonItem>
                 <IonLabel position="floating">Price per hour in Euro</IonLabel>
-                <IonInput value={text}></IonInput>
+                <IonInput
+                  value={text}
+                  onIonChange={(e) => setText(e.detail.value!)}
+                ></IonInput>
               </IonItem>
               <IonItemDivider>Availability</IonItemDivider>
               <IonButton
@@ -307,21 +352,47 @@ const MySpots: React.FC = () => {
             </IonButton>
           </IonContent>
         </IonModal>
+        {mySpots &&
+          mySpots.map((spot) => {
+            return (
+              <IonCard key={spot._id}>
+                <IonItem>
+                  <IonIcon icon={pin} slot="start" />
+                  <IonLabel>{spot.owner.name}'s Parking lot</IonLabel>
+                  <IonButton
+                    onClick={() => {
+                      axios.delete(
+                        `${process.env.REACT_APP_EASYPARK_API_URL}/spots/${spot._id}`,
+                        {
+                          headers: {
+                            Authorization: token,
+                          },
+                        }
+                      );
+                      setMySpots((prev) =>
+                        prev?.filter((item) => item._id !== spot._id)
+                      );
+                    }}
+                    color="danger"
+                    fill="solid"
+                    slot="end"
+                  >
+                    Delete
+                  </IonButton>
+                </IonItem>
 
-        <IonCard>
-          <IonItem>
-            <IonIcon icon={pin} slot="start" />
-            <IonLabel>ion-item in a card, icon left, button right</IonLabel>
-            <IonButton color="danger" fill="solid" slot="end">
-              Delete
-            </IonButton>
-          </IonItem>
-
-          <IonCardContent>
-            This is content, without any paragraph or header tags, within an
-            ion-cardContent element.
-          </IonCardContent>
-        </IonCard>
+                <IonCardContent>
+                  Address: {spot.position.address}
+                  <br></br>
+                  Available days : {spot.time.avDay.toString().split("")}
+                  <br></br>
+                  From : {spot.time.avStart} To : {spot.time.avEnd}
+                  <br></br>
+                  Price : {spot.price} €
+                </IonCardContent>
+              </IonCard>
+            );
+          })}
       </IonContent>
     </IonPage>
   );
