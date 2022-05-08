@@ -19,8 +19,9 @@ import {
   IonItemDivider,
   IonLabel,
   IonRange,
+  useIonPicker,
 } from "@ionic/react";
-import { carOutline } from "ionicons/icons";
+import { carOutline, contractOutline } from "ionicons/icons";
 import { useAuth } from "./context/AuthContex";
 import axios from "axios";
 
@@ -73,21 +74,17 @@ interface LocationError {
 
 const LeafletMap: React.FC = () => {
   const defaultValue = useContext<any>(LayerContext);
-
   const [point, setPoint] = defaultValue;
-
   const selectedLocation: LatLngTuple = [point[0]?.lat, point[0]?.lon];
-
   const [error, setError] = useState<LocationError>({ showError: false });
-
+  const [present] = useIonPicker();
+  const [from, setFrom] = useState("");
   console.log(point, selectedLocation);
-
   const [userLocation, setUserLocation] = useState<L.LatLngExpression>([
     52, 13,
   ]);
   const [nearbySpots, setNearbySpots] = useState<Spot[]>();
   const [value, setValue] = useState(0);
-
   const [selectedDate, setSelectedDate] = useState("2012-12-15T13:47:20.789");
 
   useEffect(() => {
@@ -126,14 +123,7 @@ const LeafletMap: React.FC = () => {
   const { loading, setLoading, isAuthenticated, user, token } = authContext;
 
   if (loading)
-    return (
-      <IonLoading
-        isOpen={loading}
-        onDidDismiss={() => console.log("dialog is closed")}
-        message={"Please wait..."}
-      />
-    );
-  console.log(new Date(selectedDate));
+    return <IonLoading isOpen={loading} message={"Please wait..."} />;
   return (
     <>
       <MapContainer
@@ -166,13 +156,6 @@ const LeafletMap: React.FC = () => {
                   <Popup>
                     <h3 color="blue">{spot.price}€/Hour</h3>
                     <p>{spot.position.address}</p>
-                    {/* <IonModal
-                      isOpen={true}
-                      breakpoints={[0.1, 0.5, 1]}
-                      initialBreakpoint={0.5}
-                    >
-                      <IonContent>Modal Content</IonContent>
-                    </IonModal> */}
                     <IonButton id="trigger-button">Book Now</IonButton>
                     <IonModal
                       trigger="trigger-button"
@@ -199,6 +182,56 @@ const LeafletMap: React.FC = () => {
                             return true;
                           }}
                         ></IonDatetime>
+                        <br></br>
+                        <IonButton
+                          size="default"
+                          fill="outline"
+                          color="Light"
+                          onClick={() =>
+                            present(
+                              [
+                                {
+                                  name: "hour",
+                                  options: [
+                                    { text: "1", value: "1" },
+                                    { text: "2", value: "2" },
+                                    { text: "3", value: "3" },
+                                    { text: "4", value: "4" },
+                                    { text: "5", value: "5" },
+                                    { text: "6", value: "6" },
+                                    { text: "7", value: "7" },
+                                    { text: "8", value: "8" },
+                                    { text: "9", value: "9" },
+                                    { text: "10", value: "10" },
+                                    { text: "11", value: "11" },
+                                    { text: "12", value: "12" },
+                                  ],
+                                },
+                                {
+                                  name: "time",
+                                  options: [
+                                    { text: "AM", value: "AM" },
+                                    { text: "PM", value: "PM" },
+                                  ],
+                                },
+                              ],
+                              [
+                                {
+                                  text: "Confirm",
+                                  handler: (selected) => {
+                                    console.log(selected);
+                                    setFrom(
+                                      `${selected.hour.value} ${selected.time.value}`
+                                    );
+                                  },
+                                },
+                              ]
+                            )
+                          }
+                        >
+                          From :
+                        </IonButton>
+                        {from && <div>Available from: {from}</div>}
                         <IonItemDivider>For how many hours?</IonItemDivider>
                         <IonItem>
                           <IonRange
