@@ -16,7 +16,6 @@ import {
   IonToolbar,
   IonContent,
   IonTitle,
-  IonLoading,
   InputCustomEvent,
 } from "@ionic/react";
 import { personCircle } from "ionicons/icons";
@@ -46,7 +45,7 @@ const Register: React.FC = () => {
 
   if (!authContext) return null;
 
-  const { registerUser } = authContext;
+  const { registerUser, setLoading, isAuthenticated } = authContext;
 
   const onInputChange = (event: Event) => {
     const inputEvent = event as InputCustomEvent;

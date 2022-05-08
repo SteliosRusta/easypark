@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { IonToast } from "@ionic/react";
+import { useHistory } from "react-router-dom";
 
 type AuthContextProviderProps = {
   children: React.ReactNode;
@@ -41,6 +42,7 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     return token ? token : false;
   });
   const [showToast, setShowToast] = useState<boolean>(false);
+  const history = useHistory();
 
   useEffect(() => {
     const getUser = async () => {
@@ -61,12 +63,6 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
         setToken(false);
         localStorage.removeItem("token");
         setShowToast(true);
-        <IonToast
-          isOpen={showToast}
-          onDidDismiss={() => setShowToast(false)}
-          message="Something went wrong"
-          duration={200}
-        />;
         setLoading(false);
       }
     };
@@ -84,19 +80,15 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
         `${process.env.REACT_APP_EASYPARK_API_URL}/auth/signup`,
         formData
       );
+
+      setToken(token);
       localStorage.setItem("token", token);
       setIsAuthenticated(true);
       setLoading(false);
-      setToken(token);
-      console.log(token);
+      history.replace("/home", { replace: true });
     } catch (error) {
-      <IonToast
-        isOpen={showToast}
-        onDidDismiss={() => setShowToast(false)}
-        message="Process failed"
-        duration={200}
-      />;
       setLoading(false);
+      return alert("InvalidUser");
     }
   };
 
@@ -110,20 +102,15 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
         `${process.env.REACT_APP_EASYPARK_API_URL}/auth/signin`,
         formData
       );
-      localStorage.setItem("token", token);
       console.log(token);
-      setIsAuthenticated(true);
-      setLoading(false);
+      localStorage.setItem("token", token);
       setToken(token);
-    } catch (error) {
-      //console.log(error.response?.data.error|| error.message)
-      <IonToast
-        isOpen={showToast}
-        onDidDismiss={() => setShowToast(false)}
-        message="Process failed"
-        duration={200}
-      />;
+      setIsAuthenticated(true);
+
       setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      return alert("InvalidUser");
     }
   };
 
@@ -132,6 +119,7 @@ const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     setToken(false);
     setUser(null);
     setIsAuthenticated(false);
+    history.replace("/login", { replace: true });
   };
 
   const value: AuthContextValue = {

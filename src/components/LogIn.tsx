@@ -38,12 +38,12 @@ const LogIn: React.FC = () => {
   });
   const [isError, setIsError] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
-  const authContext = useAuth();
   const history = useHistory();
+  const authContext = useAuth();
 
   if (!authContext) return null;
 
-  const { userLogin } = authContext;
+  const { userLogin, isAuthenticated, setLoading } = authContext;
 
   const onInputChange = (event: Event) => {
     const inputEvent = event as InputCustomEvent;

@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L, { LatLngTuple } from "leaflet";
 import { LayerContext } from "./context/LayerContext";
 import { isSaturday, isSunday } from "date-fns";
+import Stripe from "./Stripe";
 
 import { SearchBar } from "./SearchBar";
 import {
@@ -14,6 +15,10 @@ import {
   IonButton,
   IonContent,
   IonDatetime,
+  IonItem,
+  IonItemDivider,
+  IonLabel,
+  IonRange,
 } from "@ionic/react";
 import { carOutline } from "ionicons/icons";
 import { useAuth } from "./context/AuthContex";
@@ -81,7 +86,9 @@ const LeafletMap: React.FC = () => {
     52, 13,
   ]);
   const [nearbySpots, setNearbySpots] = useState<Spot[]>();
-  const [latitude, setLatitude] = useState<number>();
+  const [value, setValue] = useState(0);
+
+  const [selectedDate, setSelectedDate] = useState("2012-12-15T13:47:20.789");
 
   useEffect(() => {
     setLoading(true);
@@ -126,6 +133,7 @@ const LeafletMap: React.FC = () => {
         message={"Please wait..."}
       />
     );
+  console.log(new Date(selectedDate));
   return (
     <>
       <MapContainer
@@ -168,11 +176,15 @@ const LeafletMap: React.FC = () => {
                     <IonButton id="trigger-button">Book Now</IonButton>
                     <IonModal
                       trigger="trigger-button"
-                      breakpoints={[0.1, 0.5, 1]}
-                      initialBreakpoint={0.5}
+                      breakpoints={[0.1, 0.7, 1]}
+                      initialBreakpoint={0.7}
                     >
                       <IonContent>
                         <IonDatetime
+                          value={selectedDate}
+                          onIonChange={(e) => {
+                            setSelectedDate(e.detail.value!);
+                          }}
                           size="cover"
                           firstDayOfWeek={1}
                           minuteValues="0,30"
@@ -187,7 +199,30 @@ const LeafletMap: React.FC = () => {
                             return true;
                           }}
                         ></IonDatetime>
-                        <IonButton>Proceed</IonButton>
+                        <IonItemDivider>For how many hours?</IonItemDivider>
+                        <IonItem>
+                          <IonRange
+                            min={1}
+                            max={8}
+                            step={1}
+                            pin={true}
+                            value={value}
+                            onIonChange={(e) =>
+                              setValue(e.detail.value as number)
+                            }
+                          />
+                        </IonItem>
+                        <IonItem>
+                          <IonLabel>
+                            {value > 1 ? "hours" : "hour"}: {value}
+                          </IonLabel>
+                        </IonItem>
+                        <IonButton expand="block" id="stripe">
+                          Proceed with Payment
+                        </IonButton>
+                        <IonModal trigger="stripe">
+                          <Stripe />
+                        </IonModal>
                       </IonContent>
                     </IonModal>
                   </Popup>
@@ -198,6 +233,7 @@ const LeafletMap: React.FC = () => {
         <IonFab vertical="bottom" horizontal="end" slot="fixed">
           <IonFabButton
             onClick={async () => {
+              setLoading(true);
               const { data } = await axios.get(
                 `${process.env.REACT_APP_EASYPARK_API_URL}/spots/?lng=${
                   selectedLocation[1] || "13.5424887"
@@ -209,6 +245,7 @@ const LeafletMap: React.FC = () => {
                 }
               );
               setNearbySpots(data);
+              setLoading(false);
               console.log(nearbySpots);
             }}
           >

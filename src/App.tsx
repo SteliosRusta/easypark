@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Route, Redirect } from "react-router-dom";
 import { IonApp, IonRouterOutlet, setupIonicReact } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
@@ -26,6 +25,8 @@ import "./theme/variables.css";
 import LogIn from "./components/LogIn";
 import Register from "./components/Register";
 import AuthContextProvider from "./components/context/AuthContex";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Tabs from "./tabs/Home";
 
 setupIonicReact();
 
@@ -38,7 +39,7 @@ const App: React.FC = () => {
             <Route path="/login" component={LogIn} />
             <Route path="/register" component={Register} />
             <Redirect from="/" to="login" exact />
-            <Route path="/home" component={Home} />
+            <Route path="/home" component={Tabs} />
           </IonRouterOutlet>
         </IonReactRouter>
       </IonApp>
