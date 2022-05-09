@@ -184,31 +184,52 @@ const LeafletMap: React.FC = () => {
                         ></IonDatetime>
                         <br></br>
                         <IonButton
-                          expand="block"
+                          size="default"
+                          fill="outline"
+                          color="Light"
                           onClick={() =>
-                            present({
-                              buttons: [
+                            present(
+                              [
                                 {
-                                  text: "Confirm",
-                                  handler: (selected) => {
-                                    setFrom(selected.animal.value);
-                                  },
-                                },
-                              ],
-                              columns: [
-                                {
-                                  name: "animal",
+                                  name: "hour",
                                   options: [
-                                    { text: "Dog", value: "dog" },
-                                    { text: "Cat", value: "cat" },
-                                    { text: "Bird", value: "bird" },
+                                    { text: "1:00", value: "1" },
+                                    { text: "2:00", value: "2" },
+                                    { text: "3:00", value: "3" },
+                                    { text: "4:00", value: "4" },
+                                    { text: "5:00", value: "5" },
+                                    { text: "6:00", value: "6" },
+                                    { text: "7:00", value: "7" },
+                                    { text: "8:00", value: "8" },
+                                    { text: "9:00", value: "9" },
+                                    { text: "10:00", value: "10" },
+                                    { text: "11:00", value: "11" },
+                                    { text: "12:00", value: "12" },
+                                  ],
+                                },
+                                {
+                                  name: "time",
+                                  options: [
+                                    { text: "AM", value: "AM" },
+                                    { text: "PM", value: "PM" },
                                   ],
                                 },
                               ],
-                            })
+                              [
+                                {
+                                  text: "Confirm",
+                                  handler: (selected) => {
+                                    console.log(selected);
+                                    setFrom(
+                                      `${selected.hour.value} ${selected.time.value}`
+                                    );
+                                  },
+                                },
+                              ]
+                            )
                           }
                         >
-                          Show Picker
+                          From :
                         </IonButton>
                         {from && <div>Available from: {from}</div>}
                         <IonItemDivider>For how many hours?</IonItemDivider>
@@ -229,12 +250,12 @@ const LeafletMap: React.FC = () => {
                             {value > 1 ? "hours" : "hour"}: {value}
                           </IonLabel>
                         </IonItem>
-                        <IonButton expand="block" id="stripe">
+                        <IonButton expand="block" id="stripe" href="/pay">
                           Proceed with Payment
                         </IonButton>
-                        <IonModal trigger="stripe">
+                        {/*   <IonModal trigger="stripe">
                           <Stripe />
-                        </IonModal>
+                        </IonModal> */}
                       </IonContent>
                     </IonModal>
                   </Popup>

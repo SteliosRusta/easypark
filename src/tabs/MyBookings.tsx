@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   IonPage,
   IonHeader,
@@ -7,8 +7,34 @@ import {
   IonContent,
   IonLoading,
 } from "@ionic/react";
+import { useAuth } from "../components/context/AuthContex";
+import axios from "axios";
 
 const MyBookings: React.FC = () => {
+  useEffect(() => {
+    (async () => {
+      try {
+        setLoading(true);
+        const { data } = await axios.get(
+          `${process.env.REACT_APP_EASYPARK_API_URL}/booking`,
+          {
+            headers: {
+              Authorization: token,
+            },
+          }
+        );
+        console.log(data);
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, []);
+
+  const authContext = useAuth();
+
+  if (!authContext) return null;
+
+  const { setLoading, token } = authContext;
   return (
     <IonPage>
       <IonHeader>

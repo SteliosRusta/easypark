@@ -1,12 +1,15 @@
-import { Redirect } from "react-router-dom";
+import { Redirect, Route, RouteProps } from "react-router-dom";
 import { useAuth } from "../components/context/AuthContex";
-import Tabs from "../tabs/Home";
 
-const ProtectedRoute: React.FC = () => {
+const ProtectedRoute = ({ component: Component, ...rest }: RouteProps) => {
   const authContext = useAuth();
-  if (!authContext) return null;
+  if (!authContext) return <Redirect to="/login" />;
   const { isAuthenticated } = authContext;
-  return isAuthenticated ? <Tabs /> : <Redirect to="/login" />;
+  return isAuthenticated ? (
+    <Route component={Component} {...rest} />
+  ) : (
+    <Redirect to="/login" />
+  );
 };
 
 export default ProtectedRoute;

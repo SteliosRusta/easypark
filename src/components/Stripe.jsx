@@ -11,6 +11,7 @@ import { useState, useEffect } from "react";
 const stripePromise = loadStripe(
   "pk_test_51Kw5pzE8cZgQKFX0M1hPV1gfYoGZbOINWdrqgYFIDpfxBrdSnhUG9XKGECZyvdnJaIwfpcDLTyJ1ekrl8HJpNzML00yquVxO3B"
 );
+console.log(stripePromise);
 
 export default function Stripe() {
   const [clientSecret, setClientSecret] = useState("");
@@ -24,7 +25,10 @@ export default function Stripe() {
       body: JSON.stringify({ items: [{ id: "xl-tshirt" }] }),
     })
       .then((res) => res.json())
-      .then((data) => setClientSecret(data.clientSecret));
+      .then((data) => {
+        console.log(data);
+        setClientSecret(data.clientSecret);
+      });
   }, []);
 
   const appearance = {

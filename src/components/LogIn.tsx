@@ -17,7 +17,7 @@ import {
   IonTitle,
   InputCustomEvent,
 } from "@ionic/react";
-import { useHistory } from "react-router-dom";
+import { useHistory, Redirect } from "react-router-dom";
 import { personCircle } from "ionicons/icons";
 import { useAuth } from "./context/AuthContex";
 function validateEmail(email: string) {
@@ -78,6 +78,8 @@ const LogIn: React.FC = () => {
     await userLogin(loginData);
     history.replace("/home", { replace: true });
   };
+
+  if (isAuthenticated) return <Redirect to="/home" />;
 
   return (
     <IonPage>

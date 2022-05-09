@@ -1,6 +1,6 @@
 import "./LogIn.css";
 import { MouseEventHandler, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, Redirect } from "react-router-dom";
 import {
   IonRow,
   IonCol,
@@ -83,6 +83,7 @@ const Register: React.FC = () => {
     await registerUser(userData);
     history.replace("/home", { replace: true });
   };
+  if (isAuthenticated) return <Redirect to="/home" />;
 
   return (
     <IonPage>
