@@ -17,10 +17,3 @@
   width: 80vw;
   color: gray;
 }
-#suggestions {
-  position: absolute;
-  top: 50px;
-  z-index: 2000;
-  width: 80vw;
-  color: gray;
-}

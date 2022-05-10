@@ -3,17 +3,18 @@ import TextField from "@mui/material/TextField";
 import Stack from "@mui/material/Stack";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 
-export default function TimeValidationTimePicker({ booked }: any) {
+export default function TimeValidationTimePicker({ spot, booked }: any) {
   const [value, setValue] = React.useState<Date | null>(
     new Date("2020-01-01 12:00")
   );
-
+  let avStart = Number(spot.time.avStart);
+  let avEnd = Number(spot.time.avEnd);
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <Stack spacing={3}>
-        <TimePicker
+        {/* <TimePicker
           renderInput={(params) => <TextField {...params} />}
           value={value}
           label="min/max time"
@@ -22,8 +23,8 @@ export default function TimeValidationTimePicker({ booked }: any) {
           }}
           minTime={new Date(0, 0, 0, 6)}
           maxTime={new Date(0, 0, 0, 18, 45)}
-        />
-        <TimePicker
+        /> */}
+        <DateTimePicker
           renderInput={(params) => <TextField {...params} />}
           label="From"
           value={value}
@@ -31,13 +32,16 @@ export default function TimeValidationTimePicker({ booked }: any) {
             setValue(newValue);
           }}
           shouldDisableTime={(timeValue, clockType) => {
-            console.log(timeValue);
             if (clockType === "hours") {
-              for (let i = 0; i < booked.length; i++) {
+              for (let i = 0; i < booked?.length; i++) {
                 if (
-                  new Date(booked[i].startDate).getHours() <= timeValue &&
-                  new Date(booked[i].endDate).getHours() >= timeValue
+                  new Date(booked[i]?.startDate).getHours() <= timeValue &&
+                  new Date(booked[i]?.endDate).getHours() >= timeValue
                 ) {
+                  console.log(
+                    new Date(spot.time.booked[i].startDate).getHours()
+                  );
+                  console.log(new Date(spot.time.booked[i].endDate).getHours());
                   return true;
                 }
               }

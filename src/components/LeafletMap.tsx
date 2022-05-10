@@ -26,6 +26,7 @@ import { carOutline, pin } from "ionicons/icons";
 import { useAuth } from "./context/AuthContex";
 import axios from "axios";
 import TimeValidationTimePicker from "./TimePicker";
+import MobiScrol from "./MobiScrol";
 
 const icon = L.icon({
   iconUrl: "./location-sharp.svg",
@@ -67,7 +68,7 @@ interface Spot {
     avDay: string[];
     avEnd: string;
     avStart: string;
-    booked?: [];
+    booked?: { startDate: string; endDate: string }[];
   };
 }
 interface LocationError {
@@ -82,6 +83,8 @@ const LeafletMap: React.FC = () => {
   const [error, setError] = useState<LocationError>({ showError: false });
   const [present] = useIonPicker();
   const [from, setFrom] = useState("");
+  const [open, setOpen] = useState(false);
+  const [spot, setSpot] = useState<Spot>();
   console.log(point, selectedLocation);
   const [userLocation, setUserLocation] = useState<LatLngExpression>([
     52.4511, 13.5424,
@@ -134,6 +137,62 @@ const LeafletMap: React.FC = () => {
     return <IonLoading isOpen={loading} message={"Please wait..."} />;
   return (
     <>
+      <IonModal
+        isOpen={open}
+        breakpoints={[0.1, 0.8, 1]}
+        initialBreakpoint={0.8}
+        onDidDismiss={() => {
+          setOpen(false);
+        }}
+      >
+        <IonContent>
+          <IonDatetime
+            value={selectedDate}
+            onIonChange={(e) => {
+              setSelectedDate(e.detail.value!);
+            }}
+            size="cover"
+            firstDayOfWeek={1}
+            minuteValues="0,30"
+            isDateEnabled={(dateIsoString: string) => {
+              if (
+                isSaturday(new Date(dateIsoString)) ||
+                isSunday(new Date(dateIsoString))
+              ) {
+                // Disables Saturday and Sunday
+                return false;
+              }
+              return true;
+            }}
+          ></IonDatetime>
+          {/* <TimeValidationTimePicker spot={spot} booked={spot?.time.booked} /> */}
+          <MobiScrol booked={spot?.time.booked} />
+
+          {from && <div>Available from: {from}</div>}
+          <IonItemDivider>For how many hours?</IonItemDivider>
+          <IonItem>
+            <IonRange
+              min={1}
+              max={8}
+              step={1}
+              pin={true}
+              value={value}
+              onIonChange={(e) => setValue(e.detail.value as number)}
+            />
+          </IonItem>
+          <IonItem>
+            <IonLabel>
+              {value > 1 ? "hours" : "hour"}: {value}
+            </IonLabel>
+          </IonItem>
+          <IonButton expand="block" id="stripe" href="/pay">
+            Proceed with Payment
+          </IonButton>
+          {/*   <IonModal trigger="stripe">
+                          <Stripe />
+                        </IonModal> */}
+        </IonContent>
+      </IonModal>
       <MapContainer
         id="map"
         center={userLocation}
@@ -172,65 +231,14 @@ const LeafletMap: React.FC = () => {
                   <Popup>
                     <h3 color="blue">{spot.price}€/Hour</h3>
                     <p>{spot.position.address}</p>
-                    <IonButton id="trigger-button">Book Now</IonButton>
-                    <IonModal
-                      trigger="trigger-button"
-                      breakpoints={[0.1, 0.8, 1]}
-                      initialBreakpoint={0.8}
+                    <IonButton
+                      onClick={() => {
+                        setOpen(true);
+                        setSpot(spot);
+                      }}
                     >
-                      <IonContent>
-                        <IonDatetime
-                          value={selectedDate}
-                          onIonChange={(e) => {
-                            setSelectedDate(e.detail.value!);
-                          }}
-                          size="cover"
-                          firstDayOfWeek={1}
-                          minuteValues="0,30"
-                          isDateEnabled={(dateIsoString: string) => {
-                            if (
-                              isSaturday(new Date(dateIsoString)) ||
-                              isSunday(new Date(dateIsoString))
-                            ) {
-                              // Disables Saturday and Sunday
-                              return false;
-                            }
-                            return true;
-                          }}
-                        ></IonDatetime>
-                        <br></br>
-                        <IonItem onClick={() => console.log("clicked")}>
-                          Hello
-                        </IonItem>
-                        <TimeValidationTimePicker booked={spot.time.booked} />
-
-                        {from && <div>Available from: {from}</div>}
-                        <IonItemDivider>For how many hours?</IonItemDivider>
-                        <IonItem>
-                          <IonRange
-                            min={1}
-                            max={8}
-                            step={1}
-                            pin={true}
-                            value={value}
-                            onIonChange={(e) =>
-                              setValue(e.detail.value as number)
-                            }
-                          />
-                        </IonItem>
-                        <IonItem>
-                          <IonLabel>
-                            {value > 1 ? "hours" : "hour"}: {value}
-                          </IonLabel>
-                        </IonItem>
-                        <IonButton expand="block" id="stripe" href="/pay">
-                          Proceed with Payment
-                        </IonButton>
-                        {/*   <IonModal trigger="stripe">
-                          <Stripe />
-                        </IonModal> */}
-                      </IonContent>
-                    </IonModal>
+                      Book Now
+                    </IonButton>
                   </Popup>
                 </Marker>
               );

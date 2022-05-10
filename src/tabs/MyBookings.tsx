@@ -122,16 +122,16 @@ const MyBookings: React.FC = () => {
                   </IonButton>
                 </IonItem>
 
-                {/* <IonCardContent>
+                <IonCardContent>
                   Address: {booking.spot.position.address}
                   <br></br>
-                  Booked for : {booking.startDate}
+                  Booked for : {new Date(booking.startDate).toDateString()}
                   <br></br>
                   From : {booking.spot.time.avStart} To :{" "}
                   {booking.spot.time.avEnd}
                   <br></br>
                   Price : {booking.spot.price} €/hour
-                </IonCardContent> */}
+                </IonCardContent>
               </IonCard>
             );
           })}
