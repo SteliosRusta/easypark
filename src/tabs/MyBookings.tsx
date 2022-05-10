@@ -16,6 +16,7 @@ import {
 import { pin } from "ionicons/icons";
 import { useAuth } from "../components/context/AuthContex";
 import axios from "axios";
+import TimeValidationTimePicker from "../components/TimePicker";
 interface Spot {
   position: {
     address: string;
@@ -91,13 +92,14 @@ const MyBookings: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
+        <TimeValidationTimePicker booked />
         {myBookings &&
           myBookings.map((booking) => {
             return (
               <IonCard key={booking._id}>
                 <IonItem>
                   <IonIcon icon={pin} slot="start" />
-                  <IonLabel>{booking.startDate}'s Parking lot</IonLabel>
+                  <IonLabel>Booked Parking lot</IonLabel>
                   <IonButton
                     onClick={() => {
                       axios.delete(
@@ -116,21 +118,20 @@ const MyBookings: React.FC = () => {
                     fill="solid"
                     slot="end"
                   >
-                    Delete
+                    Cancel
                   </IonButton>
                 </IonItem>
 
-                <IonCardContent>
+                {/* <IonCardContent>
                   Address: {booking.spot.position.address}
                   <br></br>
-                  Available days :{" "}
-                  {booking.spot.time.avDay.toString().split("")}
+                  Booked for : {booking.startDate}
                   <br></br>
                   From : {booking.spot.time.avStart} To :{" "}
                   {booking.spot.time.avEnd}
                   <br></br>
-                  Price : {booking.spot.price} €
-                </IonCardContent>
+                  Price : {booking.spot.price} €/hour
+                </IonCardContent> */}
               </IonCard>
             );
           })}

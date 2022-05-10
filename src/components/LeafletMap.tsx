@@ -22,9 +22,10 @@ import {
   useIonPicker,
   IonToast,
 } from "@ionic/react";
-import { carOutline, contractOutline } from "ionicons/icons";
+import { carOutline, pin } from "ionicons/icons";
 import { useAuth } from "./context/AuthContex";
 import axios from "axios";
+import TimeValidationTimePicker from "./TimePicker";
 
 const icon = L.icon({
   iconUrl: "./location-sharp.svg",
@@ -66,6 +67,7 @@ interface Spot {
     avDay: string[];
     avEnd: string;
     avStart: string;
+    booked?: [];
   };
 }
 interface LocationError {
@@ -174,7 +176,7 @@ const LeafletMap: React.FC = () => {
                     <IonModal
                       trigger="trigger-button"
                       breakpoints={[0.1, 0.8, 1]}
-                      initialBreakpoint={0.7}
+                      initialBreakpoint={0.8}
                     >
                       <IonContent>
                         <IonDatetime
@@ -197,54 +199,11 @@ const LeafletMap: React.FC = () => {
                           }}
                         ></IonDatetime>
                         <br></br>
-                        <IonButton
-                          size="default"
-                          fill="outline"
-                          color="Light"
-                          onClick={() =>
-                            present(
-                              [
-                                {
-                                  name: "hour",
-                                  options: [
-                                    { text: "1:00", value: "1" },
-                                    { text: "2:00", value: "2" },
-                                    { text: "3:00", value: "3" },
-                                    { text: "4:00", value: "4" },
-                                    { text: "5:00", value: "5" },
-                                    { text: "6:00", value: "6" },
-                                    { text: "7:00", value: "7" },
-                                    { text: "8:00", value: "8" },
-                                    { text: "9:00", value: "9" },
-                                    { text: "10:00", value: "10" },
-                                    { text: "11:00", value: "11" },
-                                    { text: "12:00", value: "12" },
-                                  ],
-                                },
-                                {
-                                  name: "time",
-                                  options: [
-                                    { text: "AM", value: "AM" },
-                                    { text: "PM", value: "PM" },
-                                  ],
-                                },
-                              ],
-                              [
-                                {
-                                  text: "Confirm",
-                                  handler: (selected) => {
-                                    console.log(selected);
-                                    setFrom(
-                                      `${selected.hour.value} ${selected.time.value}`
-                                    );
-                                  },
-                                },
-                              ]
-                            )
-                          }
-                        >
-                          From :
-                        </IonButton>
+                        <IonItem onClick={() => console.log("clicked")}>
+                          Hello
+                        </IonItem>
+                        <TimeValidationTimePicker booked={spot.time.booked} />
+
                         {from && <div>Available from: {from}</div>}
                         <IonItemDivider>For how many hours?</IonItemDivider>
                         <IonItem>
