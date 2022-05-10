@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   IonPage,
   IonHeader,
@@ -6,14 +6,60 @@ import {
   IonTitle,
   IonContent,
   IonLoading,
+  IonItem,
+  IonLabel,
+  IonButton,
+  IonIcon,
+  IonCard,
+  IonCardContent,
 } from "@ionic/react";
+import { pin } from "ionicons/icons";
 import { useAuth } from "../components/context/AuthContex";
 import axios from "axios";
-
+interface Spot {
+  position: {
+    address: string;
+    location: {
+      coordinates: L.LatLngExpression;
+      type?: string;
+    };
+  };
+  _id: string;
+  __v?: number;
+  owner: {
+    email?: string;
+    name?: string;
+    id?: string;
+    __v?: number;
+  };
+  price: number;
+  time: {
+    avDay: string[];
+    avEnd: string;
+    avStart: string;
+    booked: [
+      { startDate: string; endDate: string; idBooking: string; _id: string }
+    ];
+  };
+}
+interface Booking {
+  endDate: string;
+  startDate: string;
+  _id: string;
+  __v?: number;
+  user: {
+    email: string;
+    name: string;
+    _id: string;
+    __v?: number;
+  };
+  spot: Spot;
+}
 const MyBookings: React.FC = () => {
+  const [myBookings, setMyBookings] = useState<Booking[]>();
   useEffect(() => {
-    (async () => {
-      try {
+    try {
+      (async () => {
         setLoading(true);
         const { data } = await axios.get(
           `${process.env.REACT_APP_EASYPARK_API_URL}/booking`,
@@ -23,11 +69,13 @@ const MyBookings: React.FC = () => {
             },
           }
         );
+        setLoading(false);
         console.log(data);
-      } catch (error) {
-        console.log(error);
-      }
-    })();
+        setMyBookings(data);
+      })();
+    } catch (error) {
+      console.log(error);
+    }
   }, []);
 
   const authContext = useAuth();
@@ -43,7 +91,49 @@ const MyBookings: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <h1>My Bookings</h1>
+        {myBookings &&
+          myBookings.map((booking) => {
+            return (
+              <IonCard key={booking._id}>
+                <IonItem>
+                  <IonIcon icon={pin} slot="start" />
+                  <IonLabel>{booking.startDate}'s Parking lot</IonLabel>
+                  <IonButton
+                    onClick={() => {
+                      axios.delete(
+                        `${process.env.REACT_APP_EASYPARK_API_URL}/booking/${booking._id}`,
+                        {
+                          headers: {
+                            Authorization: token,
+                          },
+                        }
+                      );
+                      setMyBookings((prev) =>
+                        prev?.filter((item) => item._id !== booking._id)
+                      );
+                    }}
+                    color="danger"
+                    fill="solid"
+                    slot="end"
+                  >
+                    Delete
+                  </IonButton>
+                </IonItem>
+
+                <IonCardContent>
+                  Address: {booking.spot.position.address}
+                  <br></br>
+                  Available days :{" "}
+                  {booking.spot.time.avDay.toString().split("")}
+                  <br></br>
+                  From : {booking.spot.time.avStart} To :{" "}
+                  {booking.spot.time.avEnd}
+                  <br></br>
+                  Price : {booking.spot.price} €
+                </IonCardContent>
+              </IonCard>
+            );
+          })}
       </IonContent>
     </IonPage>
   );

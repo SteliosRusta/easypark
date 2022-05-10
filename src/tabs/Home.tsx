@@ -6,6 +6,7 @@ import {
   IonIcon,
   IonLabel,
   IonRouterOutlet,
+  IonPage,
 } from "@ionic/react";
 import { car, home, list, person } from "ionicons/icons";
 import { Route } from "react-router-dom";
@@ -19,38 +20,36 @@ import MyBookings from "./MyBookings";
 
 const Tabs: React.FC = () => {
   return (
-    <IonReactRouter>
-      <IonTabs>
-        <IonTabBar slot="bottom">
-          <IonTabButton tab="home" href="/home/homepage">
-            <IonIcon icon={home} />
-            <IonLabel>home</IonLabel>
-          </IonTabButton>
+    <IonTabs>
+      <IonTabBar slot="bottom">
+        <IonTabButton tab="home" href="/home">
+          <IonIcon icon={home} />
+          <IonLabel>home</IonLabel>
+        </IonTabButton>
 
-          <IonTabButton tab="profile" href="/home/profile">
-            <IonIcon icon={person} />
-            <IonLabel>Profile</IonLabel>
-          </IonTabButton>
+        <IonTabButton tab="profile" href="/home/profile">
+          <IonIcon icon={person} />
+          <IonLabel>Profile</IonLabel>
+        </IonTabButton>
 
-          <IonTabButton tab="<myBookings>" href="/home/mybookings">
-            <IonIcon icon={list} />
-            <IonLabel>My Bookings</IonLabel>
-          </IonTabButton>
+        <IonTabButton tab="<myBookings>" href="/home/mybookings">
+          <IonIcon icon={list} />
+          <IonLabel>My Bookings</IonLabel>
+        </IonTabButton>
 
-          <IonTabButton tab="<mySpots>" href="/home/myspots">
-            <IonIcon icon={car} />
-            <IonLabel>My Spots</IonLabel>
-          </IonTabButton>
-        </IonTabBar>
+        <IonTabButton tab="<mySpots>" href="/home/myspots">
+          <IonIcon icon={car} />
+          <IonLabel>My Spots</IonLabel>
+        </IonTabButton>
+      </IonTabBar>
 
-        <IonRouterOutlet>
-          <Route path="/home/homepage" component={HomePage} />
-          <Route path="/home/profile" component={Profile} />
-          <Route path="/home/mybookings" component={MyBookings} />
-          <Route path="/home/myspots" component={MySpots} />
-        </IonRouterOutlet>
-      </IonTabs>
-    </IonReactRouter>
+      <IonRouterOutlet>
+        <Route exact path="/home" component={HomePage} />
+        <Route path="/home/profile" component={Profile} />
+        <Route path="/home/mybookings" component={MyBookings} />
+        <Route path="/home/myspots" component={MySpots} />
+      </IonRouterOutlet>
+    </IonTabs>
   );
 };
 

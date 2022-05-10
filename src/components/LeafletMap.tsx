@@ -1,9 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
-import L, { LatLngTuple } from "leaflet";
+import L, { LatLngExpression, LatLngLiteral, LatLngTuple } from "leaflet";
 import { LayerContext } from "./context/LayerContext";
 import { isSaturday, isSunday } from "date-fns";
-import Stripe from "./Stripe";
+import { Geolocation, Position } from "@capacitor/geolocation";
 
 import { SearchBar } from "./SearchBar";
 import {
@@ -20,6 +20,7 @@ import {
   IonLabel,
   IonRange,
   useIonPicker,
+  IonToast,
 } from "@ionic/react";
 import { carOutline, contractOutline } from "ionicons/icons";
 import { useAuth } from "./context/AuthContex";
@@ -80,8 +81,8 @@ const LeafletMap: React.FC = () => {
   const [present] = useIonPicker();
   const [from, setFrom] = useState("");
   console.log(point, selectedLocation);
-  const [userLocation, setUserLocation] = useState<L.LatLngExpression>([
-    52, 13,
+  const [userLocation, setUserLocation] = useState<LatLngExpression>([
+    52.4511, 13.5424,
   ]);
   const [nearbySpots, setNearbySpots] = useState<Spot[]>();
   const [value, setValue] = useState(0);
@@ -97,12 +98,16 @@ const LeafletMap: React.FC = () => {
         const data = await res.json();
         console.log(data);
       };
-      navigator.geolocation.getCurrentPosition(async (geolocation) => {
+      const getCurrentPosition = async () => {
         try {
+          const position = await Geolocation.getCurrentPosition();
           setUserLocation([
-            geolocation.coords.latitude,
-            geolocation.coords.longitude,
+            position.coords.latitude,
+            position.coords.longitude,
           ]);
+          console.log(position);
+          setError({ message: undefined, showError: false });
+
           setLoading(false);
         } catch (e: any) {
           const message =
@@ -113,7 +118,8 @@ const LeafletMap: React.FC = () => {
           setLoading(false);
           getAprox();
         }
-      });
+      };
+      getCurrentPosition();
     }
   }, []);
   const authContext = useAuth();
@@ -134,6 +140,14 @@ const LeafletMap: React.FC = () => {
         style={{ height: "87vh", width: "100vw" }}
       >
         <SearchBar />
+        <IonToast
+          isOpen={error.showError}
+          message={error.message}
+          duration={3000}
+          onDidDismiss={() => {
+            setError({ message: undefined, showError: false });
+          }}
+        />
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://api.maptiler.com/maps/basic/256/{z}/{x}/{y}.png?key=3h7MREADTYdMOXr8hNkM "
@@ -159,7 +173,7 @@ const LeafletMap: React.FC = () => {
                     <IonButton id="trigger-button">Book Now</IonButton>
                     <IonModal
                       trigger="trigger-button"
-                      breakpoints={[0.1, 0.7, 1]}
+                      breakpoints={[0.1, 0.8, 1]}
                       initialBreakpoint={0.7}
                     >
                       <IonContent>
@@ -263,7 +277,12 @@ const LeafletMap: React.FC = () => {
               );
             })
           : null}
-        <IonFab vertical="bottom" horizontal="end" slot="fixed">
+        <IonFab
+          vertical="bottom"
+          horizontal="end"
+          slot="fixed"
+          style={{ marginBottom: 15 }}
+        >
           <IonFabButton
             onClick={async () => {
               setLoading(true);
