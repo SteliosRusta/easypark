@@ -9,8 +9,8 @@ export default function TimeValidationTimePicker({ spot, booked }: any) {
   const [value, setValue] = React.useState<Date | null>(
     new Date("2020-01-01 12:00")
   );
-  let avStart = Number(spot.time.avStart);
-  let avEnd = Number(spot.time.avEnd);
+  //   let avStart = Number(spot.time.avStart);
+  //   let avEnd = Number(spot.time.avEnd);
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <Stack spacing={3}>

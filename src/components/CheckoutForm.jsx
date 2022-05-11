@@ -58,7 +58,7 @@ export default function CheckoutForm() {
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
-        return_url: "http://localhost:8100/home/myspots",
+        return_url: "http://localhost:8100/success",
       },
     });
     // This point will only be reached if there is an immediate error when

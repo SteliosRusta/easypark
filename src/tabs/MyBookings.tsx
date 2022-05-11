@@ -38,14 +38,12 @@ interface Spot {
     avDay: string[];
     avEnd: string;
     avStart: string;
-    booked: [
-      { startDate: string; endDate: string; idBooking: string; _id: string }
-    ];
+    booked: [{ start: string; end: string; idBooking: string; _id: string }];
   };
 }
 interface Booking {
-  endDate: string;
-  startDate: string;
+  end: string;
+  start: string;
   _id: string;
   __v?: number;
   user: {
@@ -63,7 +61,7 @@ const MyBookings: React.FC = () => {
       (async () => {
         setLoading(true);
         const { data } = await axios.get(
-          `${process.env.REACT_APP_EASYPARK_API_URL}/booking`,
+          `${process.env.REACT_APP_EASYPARK_API_URL}/booking/myBooks`,
           {
             headers: {
               Authorization: token,
@@ -92,7 +90,7 @@ const MyBookings: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <TimeValidationTimePicker booked />
+        <TimeValidationTimePicker />
         {myBookings &&
           myBookings.map((booking) => {
             return (
@@ -125,12 +123,16 @@ const MyBookings: React.FC = () => {
                 <IonCardContent>
                   Address: {booking.spot.position.address}
                   <br></br>
-                  Booked for : {new Date(booking.startDate).toDateString()}
+                  Booked for : {new Date(booking.start).toDateString()}
                   <br></br>
-                  From : {booking.spot.time.avStart} To :{" "}
-                  {booking.spot.time.avEnd}
+                  From : {new Date(booking.start).getHours()} To :{" "}
+                  {new Date(booking.end).getHours()}
                   <br></br>
-                  Price : {booking.spot.price} €/hour
+                  Total Price :{" "}
+                  {booking.spot.price *
+                    (new Date(booking.end).getHours() -
+                      new Date(booking.start).getHours())}{" "}
+                  €
                 </IonCardContent>
               </IonCard>
             );
