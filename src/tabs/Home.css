@@ -1,6 +1,5 @@
 .img {
-  background: url(https://images.unsplash.com/photo-1509136561942-7d8663edaaa2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OXx8YmVybGlufGVufDB8fDB8fA%3D%3D&w=1000&q=80)
-    no-repeat center center fixed;
+  background-attachment: fixed;
   background-size: cover;
   height: 100;
 }

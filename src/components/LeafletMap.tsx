@@ -27,6 +27,7 @@ import { useAuth } from "./context/AuthContex";
 import axios from "axios";
 import TimeValidationTimePicker from "./TimePicker";
 import MobiScrol from "./MobiScrol";
+import { useLocation } from "react-router";
 
 const icon = L.icon({
   iconUrl: "./location-sharp.svg",
@@ -311,6 +312,16 @@ const LeafletMap: React.FC = () => {
             }}
           >
             <IonIcon icon={carOutline} />
+          </IonFabButton>
+        </IonFab>
+        <IonFab
+          vertical="bottom"
+          horizontal="start"
+          slot="fixed"
+          style={{ marginBottom: 15 }}
+        >
+          <IonFabButton onClick={() => {}}>
+            <IonIcon icon={pin} />
           </IonFabButton>
         </IonFab>
 

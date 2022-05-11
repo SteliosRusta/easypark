@@ -17,11 +17,13 @@ import {
 import "./Profile.css";
 import { useAuth } from "../components/context/AuthContex";
 import { useHistory } from "react-router-dom";
+import axios from "axios";
 
 interface UserData {
   name: string | undefined;
   email: string | undefined;
   password: string | undefined;
+  _id?: string;
 }
 
 export const Profile: React.FC = () => {
@@ -31,9 +33,10 @@ export const Profile: React.FC = () => {
     name: "",
     email: "",
     password: "",
+    _id: "",
   });
   if (!authContext) return null;
-  const { logOut, user } = authContext;
+  const { logOut, user, token, setLoading } = authContext;
 
   console.log(user);
 
@@ -97,7 +100,34 @@ export const Profile: React.FC = () => {
             ></IonInput>
           </IonItem>
         </IonCardHeader>
-        <IonButton color="primary">Update Profile</IonButton>
+        <IonButton
+          onClick={async () => {
+            const formData = {
+              name: name,
+              email: email,
+              password: password,
+            };
+            try {
+              setLoading(true);
+              await axios.put(
+                `${process.env.REACT_APP_EASYPARK_API_URL}/auth/me/6273f117b7d0a8c441c9a558`,
+                formData,
+                {
+                  headers: {
+                    Authorization: token,
+                  },
+                }
+              );
+              setLoading(false);
+            } catch (error) {
+              console.log(error);
+              setLoading(false);
+            }
+          }}
+          color="primary"
+        >
+          Update Profile
+        </IonButton>
         <IonButton
           onClick={() => {
             logOut();

@@ -28,12 +28,12 @@ const Tabs: React.FC = () => {
       <IonHeader>
         <IonToolbar>
           <IonTitle>
-            <h1>Welcole EasyPark</h1>
+            <h1> EasyPark</h1>
           </IonTitle>
         </IonToolbar>
       </IonHeader>
       <img
-        src="https://images.unsplash.com/photo-1509136561942-7d8663edaaa2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OXx8YmVybGlufGVufDB8fDB8fA%3D%3D&w=1000&q=80"
+        src="https://images.unsplash.com/photo-1509136561942-7d8663edaaa2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OXx8YmVybGlufGVufDB8fDB8fA%3D%3D&w=1500&=80"
         className="img"
       ></img>
       <IonTabs>

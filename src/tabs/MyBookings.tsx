@@ -90,7 +90,6 @@ const MyBookings: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <TimeValidationTimePicker />
         {myBookings &&
           myBookings.map((booking) => {
             return (
