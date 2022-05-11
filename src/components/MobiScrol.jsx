@@ -8,7 +8,7 @@ setOptions({
   themeVariant: "light",
 });
 
-function MobiScrol({ booked }) {
+function MobiScrol({ booked, setSelectedDate }) {
   const invalid = [
     "2020-02-12",
     "2020-05-20",
@@ -57,28 +57,12 @@ function MobiScrol({ booked }) {
   return (
     <Datepicker
       onChange={(event, inst) => {
-        console.log(event, inst);
+        console.log(event);
+        setSelectedDate(event.value);
       }}
       controls={["calendar", "time"]}
       display="bubble"
-      invalid={[
-        {
-          start: booked[1].startDate.toString(),
-          end: booked[1].endDate.toString(),
-        },
-        {
-          start: booked[2].startDate.toString(),
-          end: booked[2].endDate.toString(),
-        },
-        {
-          start: "2022-04-01T09:00",
-          end: "2022-04-01T18:30",
-        },
-        {
-          start: "2022-05-20T09:40:48.193Z",
-          end: "2022-05-20T12:40:48.193Z",
-        },
-      ]}
+      invalid={booked}
     />
   );
 }

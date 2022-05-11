@@ -91,7 +91,9 @@ const LeafletMap: React.FC = () => {
   ]);
   const [nearbySpots, setNearbySpots] = useState<Spot[]>();
   const [value, setValue] = useState(0);
-  const [selectedDate, setSelectedDate] = useState("2012-12-15T13:47:20.789");
+  const [selectedDate, setSelectedDate] = useState<string>(Date());
+
+  console.log(value);
 
   useEffect(() => {
     setLoading(true);
@@ -127,6 +129,35 @@ const LeafletMap: React.FC = () => {
       getCurrentPosition();
     }
   }, []);
+
+  const createBooking = async () => {
+    try {
+      setLoading(true);
+      const startD = new Date(selectedDate);
+      console.log(startD);
+      new Date(startD.setHours(startD.getHours() + value)).toISOString();
+      const formData = {
+        start: new Date(selectedDate).toISOString(),
+        end: new Date(startD.setHours(startD.getHours() + value)).toISOString(),
+        spot: spot?._id,
+      };
+      console.log(formData);
+      const { data } = await axios.post(
+        `${process.env.REACT_APP_EASYPARK_API_URL}/booking`,
+        formData,
+        {
+          headers: {
+            Authorization: token,
+          },
+        }
+      );
+
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+    }
+  };
   const authContext = useAuth();
 
   if (!authContext) return null;
@@ -146,7 +177,7 @@ const LeafletMap: React.FC = () => {
         }}
       >
         <IonContent>
-          <IonDatetime
+          {/* <IonDatetime
             value={selectedDate}
             onIonChange={(e) => {
               setSelectedDate(e.detail.value!);
@@ -164,9 +195,12 @@ const LeafletMap: React.FC = () => {
               }
               return true;
             }}
-          ></IonDatetime>
+          ></IonDatetime> */}
           {/* <TimeValidationTimePicker spot={spot} booked={spot?.time.booked} /> */}
-          <MobiScrol booked={spot?.time.booked} />
+          <MobiScrol
+            booked={spot?.time.booked}
+            setSelectedDate={setSelectedDate}
+          />
 
           {from && <div>Available from: {from}</div>}
           <IonItemDivider>For how many hours?</IonItemDivider>
@@ -185,7 +219,12 @@ const LeafletMap: React.FC = () => {
               {value > 1 ? "hours" : "hour"}: {value}
             </IonLabel>
           </IonItem>
-          <IonButton expand="block" id="stripe" href="/pay">
+          <IonButton
+            onClick={createBooking}
+            expand="block"
+            id="stripe"
+            href="/pay"
+          >
             Proceed with Payment
           </IonButton>
           {/*   <IonModal trigger="stripe">
