@@ -44,7 +44,6 @@ export const SearchBar: React.FC = () => {
           onIonChange={(e) => {
             setSearchText(e.detail.value!);
           }}
-          showCancelButton="focus"
         ></IonSearchbar>
         <IonButton
           style={{ padding: 0, margin: 0, height: "76%" }}

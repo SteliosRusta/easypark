@@ -258,9 +258,7 @@ const LeafletMap: React.FC = () => {
         />
         {point && (
           <Marker position={userLocation} icon={icon}>
-            <Popup>
-              A pretty CSS3 popup. <br /> Easily customizable.
-            </Popup>
+            <Popup>This is your Location.</Popup>
           </Marker>
         )}
         {nearbySpots

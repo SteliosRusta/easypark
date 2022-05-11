@@ -99,6 +99,19 @@ const MyBookings: React.FC = () => {
                   <IonLabel>Booked Parking lot</IonLabel>
                   <IonButton
                     onClick={() => {
+                      window.open(
+                        "https://maps.google.com?q=" +
+                          booking.spot.position.location.coordinates.toString()
+                      );
+                    }}
+                    color="primary"
+                    fill="solid"
+                    slot="end"
+                  >
+                    Get direction
+                  </IonButton>
+                  <IonButton
+                    onClick={() => {
                       axios.delete(
                         `${process.env.REACT_APP_EASYPARK_API_URL}/booking/${booking._id}`,
                         {
