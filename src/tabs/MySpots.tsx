@@ -58,8 +58,10 @@ const MySpots: React.FC = () => {
   const [state, setState] = useState<string>("");
   const [zipCode, setZipCode] = useState<string>("");
   const [spotPoint, setSpotPoint] = useState<string>("");
-  const [spotCoor, setSpotCoor] = useState<LatLngTuple>([0, 0]);
+  const [spotCoor, setSpotCoor] = useState<LatLngTuple>();
   const [mySpots, setMySpots] = useState<Spot[]>();
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [rerender, setRerender] = useState<boolean>(false);
 
   useEffect(() => {
     try {
@@ -80,57 +82,57 @@ const MySpots: React.FC = () => {
     } catch (error) {
       console.log(error);
     }
-  }, []);
+  }, [rerender]);
   const authContext = useAuth();
 
   if (!authContext) return null;
+  const newDate = async () => {
+    const formData = {
+      position: {
+        address: spotPoint,
+        location: {
+          type: "Point",
+          coordinates: spotCoor,
+        },
+      },
+      price: Number(text),
+
+      time: {
+        avDay: selectedDays,
+        avStart: from,
+        avEnd: to,
+      },
+    };
+    console.log(formData);
+    const { data } = await axios.post(
+      `${process.env.REACT_APP_EASYPARK_API_URL}/spots`,
+      formData,
+      {
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
+  };
 
   const { setLoading, token, user } = authContext;
-  console.log(spotCoor);
+  console.log(spotCoor, address, city, zipCode);
   const saveSpot = async () => {
+    setLoading(true);
+    setSpotPoint(`${address} ${city} ${zipCode} ${state}`);
+    const newPoint = `${city} ${zipCode}`;
     try {
-      setLoading(true);
-      setSpotPoint(`${address} ${city} ${zipCode} ${state}`);
-      const NOMINATIM_BASE_URL = `https://nominatim.openstreetmap.org/?addressdetails=1&q=${spotPoint}&format=json&limit=1`;
+      const NOMINATIM_BASE_URL = `https://nominatim.openstreetmap.org/?addressdetails=1&q=${newPoint}&format=json&limit=1`;
 
       const requestOption: any = {
         method: "GET",
         redirect: "follow",
       };
-      fetch(`${NOMINATIM_BASE_URL}`, requestOption)
-        .then((res) => res.text())
-        .then((result) => {
-          console.log(JSON.parse(result));
-          let myVar = JSON.parse(result);
-          setSpotCoor([Number(myVar[0].lat), Number(myVar[0].lon)]);
-        })
-        .catch((err) => console.log(err));
+      const { data: First } = await axios.get(`${NOMINATIM_BASE_URL}`);
 
-      const formData = {
-        position: {
-          address: spotPoint,
-          location: {
-            type: "Point",
-            coordinates: spotCoor,
-          },
-        },
-        price: Number(text),
+      console.log("this is,", First);
 
-        time: {
-          avDay: selectedDays,
-          avStart: from,
-          avEnd: to,
-        },
-      };
-      const { data } = await axios.post(
-        `${process.env.REACT_APP_EASYPARK_API_URL}/spots`,
-        formData,
-        {
-          headers: {
-            Authorization: token,
-          },
-        }
-      );
+      setSpotCoor([Number(First[0].lat), Number(First[0].lon)]);
 
       setLoading(false);
     } catch (error) {
@@ -139,7 +141,8 @@ const MySpots: React.FC = () => {
     }
   };
 
-  console.log(selectedDays);
+  console.log(spotCoor);
+
   return (
     <IonPage>
       <IonHeader>
@@ -148,10 +151,16 @@ const MySpots: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen class="ion-padding">
-        <IonButton expand="full" size="large" color="primary" id="create-spot">
+        <IonButton
+          expand="full"
+          size="large"
+          color="primary"
+          id="create-spot"
+          onClick={() => setIsOpen(true)}
+        >
           Add Spot
         </IonButton>
-        <IonModal canDismiss={true} trigger="create-spot">
+        <IonModal isOpen={isOpen} onDidDismiss={() => setIsOpen(false)}>
           <IonContent>
             <IonList>
               <IonItemDivider>Location</IonItemDivider>
@@ -182,6 +191,26 @@ const MySpots: React.FC = () => {
                   }}
                   placeholder="Zip Code"
                 ></IonInput>
+                <IonButton size="default" onClick={saveSpot}>
+                  {" "}
+                  set Address
+                </IonButton>
+              </IonItem>
+              <IonItem>
+                {spotCoor && (
+                  <IonButton
+                    style={{
+                      backgroundColor: "#49fb35",
+                      width: `100%`,
+                      color: "black",
+                    }}
+                    color="success"
+                    fill="solid"
+                    expand="full"
+                  >
+                    Address is set
+                  </IonButton>
+                )}
               </IonItem>
               <IonItemDivider>Cost</IonItemDivider>
               <IonItem>
@@ -213,13 +242,13 @@ const MySpots: React.FC = () => {
                       {
                         name: "days",
                         options: [
-                          { text: "Monday", value: "Monday" },
-                          { text: "Tuesday", value: "Tuesday" },
-                          { text: "Wednesday", value: "Wednesday" },
-                          { text: "Thursday", value: "Thursday" },
-                          { text: "Friday", value: "Friday" },
-                          { text: "Saturday", value: "Saturday" },
-                          { text: "Sunday", value: "Sunday" },
+                          { text: "Monday", value: "MO" },
+                          { text: "Tuesday", value: "TU" },
+                          { text: "Wednesday", value: "WE" },
+                          { text: "Thursday", value: "TH" },
+                          { text: "Friday", value: "FR" },
+                          { text: "Saturday", value: "SA" },
+                          { text: "Sunday", value: "SU" },
                         ],
                       },
                     ],
@@ -347,7 +376,16 @@ const MySpots: React.FC = () => {
               </IonButton>
               {to && <div>Available up to: {to}</div>}
             </IonList>
-            <IonButton onClick={saveSpot} expand="full" color="primary">
+            <IonButton
+              onClick={() => {
+                setSpotPoint(`${address} ${city} ${zipCode} ${state}`);
+                newDate();
+                setIsOpen(false);
+                setRerender((prev) => !prev);
+              }}
+              expand="block"
+              color="primary"
+            >
               Save Spot
             </IonButton>
           </IonContent>

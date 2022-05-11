@@ -138,7 +138,9 @@ const LeafletMap: React.FC = () => {
       new Date(startD.setHours(startD.getHours() + value)).toISOString();
       const formData = {
         start: new Date(selectedDate).toISOString(),
-        end: new Date(startD.setHours(startD.getHours() + value)).toISOString(),
+        end: new Date(
+          startD.setHours(new Date(selectedDate).getHours() + value)
+        ).toISOString(),
         spot: spot?._id,
       };
       console.log(formData);
@@ -200,6 +202,7 @@ const LeafletMap: React.FC = () => {
           <MobiScrol
             booked={spot?.time.booked}
             setSelectedDate={setSelectedDate}
+            avDays={spot?.time.avDay}
           />
 
           {from && <div>Available from: {from}</div>}

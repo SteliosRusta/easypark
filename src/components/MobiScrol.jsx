@@ -1,6 +1,7 @@
 import React from "react";
 import "@mobiscroll/react/dist/css/mobiscroll.min.css";
 import { Datepicker, setOptions, localeDe } from "@mobiscroll/react";
+import { daysToWeeks } from "date-fns";
 
 setOptions({
   locale: localeDe,
@@ -8,7 +9,10 @@ setOptions({
   themeVariant: "light",
 });
 
-function MobiScrol({ booked, setSelectedDate }) {
+function MobiScrol({ booked, setSelectedDate, avDays }) {
+  const allDays = ["MO", "TU", "WE", "TH", "FR", "SA", "SU"];
+  const newDays = allDays.filter((day) => avDays.indexOf(day) === -1);
+  console.log(newDays, avDays);
   const invalid = [
     "2020-02-12",
     "2020-05-20",
@@ -61,8 +65,16 @@ function MobiScrol({ booked, setSelectedDate }) {
         setSelectedDate(event.value);
       }}
       controls={["calendar", "time"]}
-      display="bubble"
-      invalid={booked}
+      display="inline"
+      invalid={[
+        ...booked,
+        {
+          recurring: {
+            repeat: "weekly",
+            weekDays: newDays.toString(),
+          },
+        },
+      ]}
     />
   );
 }
