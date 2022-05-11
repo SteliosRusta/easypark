@@ -28,6 +28,7 @@ import AuthContextProvider from "./components/context/AuthContex";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Tabs from "./tabs/Home";
 import Stripe from "./components/Stripe";
+import Success from "./tabs/Succes";
 
 setupIonicReact();
 
@@ -42,6 +43,7 @@ const App: React.FC = () => {
             <ProtectedRoute path="/home" component={Tabs} />
             <Redirect from="/" to="login" exact />
             <Route path="/pay" component={Stripe} />
+            <Route path="/success" component={Success} />
           </IonRouterOutlet>
         </IonReactRouter>
       </IonApp>

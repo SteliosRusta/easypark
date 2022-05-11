@@ -4,7 +4,7 @@ import {
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
-import { IonContent } from "@ionic/react";
+import { IonCard, IonContent } from "@ionic/react";
 export default function CheckoutForm() {
   const stripe = useStripe();
   const elements = useElements();
@@ -58,7 +58,7 @@ export default function CheckoutForm() {
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
-        return_url: "http://localhost:8100/home/myspots",
+        return_url: "http://localhost:8100/success",
       },
     });
     // This point will only be reached if there is an immediate error when
@@ -75,6 +75,8 @@ export default function CheckoutForm() {
   };
 
   return (
+    
+      <IonCard class="ion-justify-content-center center .ion-align-items-center" style={{padding:20, margin:0}}>
     <form id="payment-form" onSubmit={handleSubmit}>
       <PaymentElement id="payment-element" />
       <button disabled={isLoading || !stripe || !elements} id="submit">
@@ -85,5 +87,7 @@ export default function CheckoutForm() {
       {/* Show any error or success messages */}
       {message && <div id="payment-message">{message}</div>}
     </form>
+    </IonCard >
+   
   );
 }
