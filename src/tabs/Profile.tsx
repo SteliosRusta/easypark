@@ -13,6 +13,9 @@ import {
   IonInput,
   IonAvatar,
   InputCustomEvent,
+  IonModal,
+  IonList,
+  IonMenu,
 } from "@ionic/react";
 import "./Profile.css";
 import { useAuth } from "../components/context/AuthContex";
@@ -60,9 +63,16 @@ export const Profile: React.FC = () => {
       <IonAvatar className="ion-item-center avatar">
         <img src="https://gravatar.com/avatar/dba6bae8c566f9d4041fb9cd9ada7741?d=identicon&f=y" />
       </IonAvatar>
-      <IonButton color="primary " className="tre ion-item-center">
+      <IonButton
+        color="primary "
+        className="tre ion-item-center"
+        id="ImageUpload"
+      >
         Change picture
       </IonButton>
+      <IonModal trigger="ImageUpload">
+        <input type={"file"}></input>
+      </IonModal>
 
       <IonContent className="ion-padding ion-text-center">
         <IonCardHeader>
